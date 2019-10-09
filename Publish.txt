@@ -1,0 +1,11 @@
+Check docker file and add new projects
+
+ON windows
+from solution folder:
+docker build -t curlybas/helloworldfinal -f Dockerfile.debian-arm32-selfcontained .
+docker push curlybas/helloworldfinal
+
+ON Pi
+from $home:
+docker pull curlybas/helloworldfinal
+docker run --device /dev/gpiomem curlybas/helloworldfinal
