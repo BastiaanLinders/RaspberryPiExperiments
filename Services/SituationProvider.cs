@@ -25,9 +25,9 @@ namespace Services
 		[SuppressMessage("ReSharper", "ConvertIfStatementToReturnStatement")]
 		public AudienceState GetSituation()
 		{
-			bool movementDetected = DetectMovement();
-			bool butt1Detected = DetectButt1();
-			bool butt2Detected = DetectButt2();
+			var movementDetected = DetectMovement();
+			var butt1Detected = DetectButt1();
+			var butt2Detected = DetectButt2();
 
 			if (!movementDetected && !butt1Detected && !butt2Detected)
 			{
@@ -49,20 +49,20 @@ namespace Services
 
 		private bool DetectMovement()
 		{
-			var roomSensorValue = _controller.Read(RoomSensor);
-			return roomSensorValue == PinValue.Low;
+			var pinValue = _controller.Read(RoomSensor);
+			return pinValue == PinValue.Low;
 		}
 
 		private bool DetectButt1()
 		{
-			var roomSensorValue = _controller.Read(Chair1Sensor);
-			return roomSensorValue == PinValue.Low;
+			var pinValue = _controller.Read(Chair1Sensor);
+			return pinValue == PinValue.Low;
 		}
 
 		private bool DetectButt2()
 		{
-			var roomSensorValue = _controller.Read(Chair2Sensor);
-			return roomSensorValue == PinValue.Low;
+			var pinValue = _controller.Read(Chair2Sensor);
+			return pinValue == PinValue.Low;
 		}
 
 		private void Init()
