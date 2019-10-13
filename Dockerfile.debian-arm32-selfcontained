@@ -4,6 +4,7 @@ WORKDIR /app
 # copy csproj and restore as distinct layers
 COPY HelloWorldFinal/*.csproj ./HelloWorldFinal/
 COPY Services/*.csproj ./Services/
+COPY DeviceServices/*.csproj ./DeviceServices/
 WORKDIR /app/HelloWorldFinal
 RUN dotnet restore
 
@@ -11,6 +12,7 @@ RUN dotnet restore
 WORKDIR /app/
 COPY HelloWorldFinal/. ./HelloWorldFinal/
 COPY Services/. ./Services/
+COPY DeviceServices/. ./DeviceServices/
 WORKDIR /app/HelloWorldFinal
 RUN dotnet publish -c Release -r linux-arm -o out --self-contained true /p:PublishTrimmed=true
 

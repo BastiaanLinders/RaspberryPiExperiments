@@ -8,4 +8,4 @@ docker push curlybas/helloworldfinal
 ON Pi
 from $home:
 docker pull curlybas/helloworldfinal
-docker run --device /dev/gpiomem curlybas/helloworldfinal
+docker run --device /dev/i2c-1 --device /dev/gpiomem curlybas/helloworldfinal

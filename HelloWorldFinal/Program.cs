@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Device.Gpio;
 using System.Threading;
+using DeviceServices;
 using Services;
 using Services.PrimaNova;
 
@@ -30,12 +31,18 @@ namespace HelloWorldFinal
 			using var controller = new GpioController(PinNumberingScheme.Board);
 			using var situationProvider = new SituationProvider(controller);
 			using var feedbackService = new FeedbackService(controller);
+			using var lcdFeedbackService = new LcdFeedbackService();
+
 
 			var lastState = AudienceState.Unknown;
 			while (!cancellationToken.IsCancellationRequested)
 			{
 				var state = situationProvider.GetSituation();
-				if (state != lastState) Console.WriteLine($"State change: {state}");
+				if (state != lastState)
+				{
+					Console.WriteLine($"State change: {state}");
+					lcdFeedbackService.VisualizeAudienceState(state);
+				}
 
 				feedbackService.VisualizeAudienceState(state);
 
