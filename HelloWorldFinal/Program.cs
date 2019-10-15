@@ -23,10 +23,14 @@ namespace HelloWorldFinal
 
 			Console.WriteLine("Bootstrapping service provider");
 			var serviceProvider = Bootstrap();
-			var monitor = serviceProvider.GetRequiredService<IAudienceStateMonitor>();
+			using (var applicationScope = serviceProvider.CreateScope())
+			{
+				var monitor = applicationScope.ServiceProvider.GetRequiredService<IAudienceStateMonitor>();
+				Console.WriteLine("Start monitoring");
+				await monitor.Run(cancellationToken);
+			}
 
-			Console.WriteLine("Start monitoring");
-			await monitor.Run(cancellationToken);
+			((IDisposable) serviceProvider).Dispose();
 
 			Console.WriteLine("Finished");
 		}
@@ -40,7 +44,7 @@ namespace HelloWorldFinal
 			PrimaNovaServicesModule.RegisterServices(serviceCollection);
 
 			MediatRModule.RegisterServices(serviceCollection);
-			
+
 			return serviceCollection.BuildServiceProvider();
 		}
 

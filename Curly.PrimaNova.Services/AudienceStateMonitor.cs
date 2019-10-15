@@ -37,7 +37,8 @@ namespace Curly.PrimaNova.Services
 					await _mediator.Publish(changedEvent, cancellationToken);
 				}
 
-				await Task.Delay(breakDuration, cancellationToken);
+				// ReSharper disable once MethodSupportsCancellation : BL: That kind of defeats the purpose
+				await Task.Delay(breakDuration, cancellationToken).ContinueWith(task => { });
 				previousState = audienceState;
 			}
 		}

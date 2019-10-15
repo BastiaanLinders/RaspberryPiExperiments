@@ -18,7 +18,7 @@ namespace Curly.PrimaNova.Services
 
 		public Task Handle(AudienceStateChangedEvent notification, CancellationToken cancellationToken)
 		{
-			Console.WriteLine($"Monitor noticed state change: {notification.PreviousState} --> {notification.CurrentState}");
+			Console.WriteLine($"FeedbackHandler noticed state change: {notification.PreviousState} --> {notification.CurrentState}");
 			_audienceStateVisualizer.VisualizeState(notification.CurrentState);
 			return Task.CompletedTask;
 		}
