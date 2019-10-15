@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Device.Gpio;
 using System.Diagnostics.CodeAnalysis;
+using Curly.PrimaNova.Abstractions;
+using Curly.PrimaNova.Abstractions.Services;
 using Services.Gpio;
-using Services.PrimaNova;
 
-namespace Services
+namespace DeviceServices
 {
-	public class SituationProvider : IDisposable
+	public class SituationProvider : IActivityStateProvider, IDisposable
 	{
 		private const int RoomSensor = (int) GpioPins.Gpio19;
 		private const int Chair1Sensor = (int) GpioPins.Gpio20;
@@ -23,28 +24,14 @@ namespace Services
 
 		[SuppressMessage("ReSharper", "ConditionIsAlwaysTrueOrFalse")]
 		[SuppressMessage("ReSharper", "ConvertIfStatementToReturnStatement")]
-		public AudienceState GetSituation()
+		public ActivityState GetState()
 		{
-			var movementDetected = DetectMovement();
-			var butt1Detected = DetectButt1();
-			var butt2Detected = DetectButt2();
-
-			if (!movementDetected && !butt1Detected && !butt2Detected)
+			return new ActivityState
 			{
-				return AudienceState.Empty;
-			}
-
-			if (butt1Detected || butt2Detected)
-			{
-				return AudienceState.Sitting;
-			}
-
-			if (movementDetected)
-			{
-				return AudienceState.EnterLeaving;
-			}
-
-			return AudienceState.Unknown;
+				MovementDetected = DetectMovement(),
+				Butt1Detected = DetectButt1(),
+				Butt2Detected = DetectButt2()
+			};
 		}
 
 		private bool DetectMovement()

@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Device.Gpio" Version="1.0.0" />
+    <Folder Include="Commands\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Curly.PrimaNova.Abstractions\Curly.PrimaNova.Abstractions.csproj" />
+    <PackageReference Include="MediatR" Version="7.0.0" />
   </ItemGroup>
 
 </Project>

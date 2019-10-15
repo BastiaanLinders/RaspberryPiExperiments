@@ -2,17 +2,25 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.0-buster AS build
 WORKDIR /app
 
 # copy csproj and restore as distinct layers
-COPY HelloWorldFinal/*.csproj ./HelloWorldFinal/
-COPY Services/*.csproj ./Services/
-COPY DeviceServices/*.csproj ./DeviceServices/
+COPY ["HelloWorldFinal/*.csproj", "./HelloWorldFinal/"]
+
+COPY ["Services/*.csproj", "./Services/"]
+COPY ["DeviceServices/*.csproj", "./DeviceServices/"]
+COPY ["Curly.PrimaNova.Abstractions/*.csproj", "./Curly.PrimaNova.Abstractions/"]
+COPY ["Curly.PrimaNova.Services/*.csproj", "./Curly.PrimaNova.Services/"]
+
 WORKDIR /app/HelloWorldFinal
 RUN dotnet restore
 
 # copy and build app and libraries
 WORKDIR /app/
-COPY HelloWorldFinal/. ./HelloWorldFinal/
-COPY Services/. ./Services/
-COPY DeviceServices/. ./DeviceServices/
+COPY ["HelloWorldFinal/.", "./HelloWorldFinal/"]
+
+COPY ["Services/.", "./Services/"]
+COPY ["DeviceServices/.", "./DeviceServices/"]
+COPY ["Curly.PrimaNova.Abstractions/.", "./Curly.PrimaNova.Abstractions/"]
+COPY ["Curly.PrimaNova.Services/.", "./Curly.PrimaNova.Services/"]
+
 WORKDIR /app/HelloWorldFinal
 RUN dotnet publish -c Release -r linux-arm -o out --self-contained true /p:PublishTrimmed=true
 

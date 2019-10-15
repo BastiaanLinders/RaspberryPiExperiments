@@ -1,10 +1,12 @@
-﻿namespace Services.PrimaNova
+﻿namespace Curly.PrimaNova.Abstractions
 {
 	public enum AudienceState
 	{
 		Unknown,
 		Empty,
 		EnterLeaving,
-		Sitting
+		Sitting,
+		Watching,
+		Fleeing
 	}
 }

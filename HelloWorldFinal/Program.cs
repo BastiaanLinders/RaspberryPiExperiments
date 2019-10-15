@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Device.Gpio;
 using System.Threading;
+using System.Threading.Tasks;
+using Curly.PrimaNova.Abstractions.Services;
+using Curly.PrimaNova.Services;
 using DeviceServices;
-using Services;
-using Services.PrimaNova;
+using HelloWorldFinal.Stubs;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace HelloWorldFinal
 {
@@ -11,7 +13,7 @@ namespace HelloWorldFinal
 	{
 		private static readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
-		private static void Main(string[] args)
+		private static async Task Main(string[] args)
 		{
 			Console.WriteLine("Starting");
 
@@ -19,36 +21,27 @@ namespace HelloWorldFinal
 			Console.CancelKeyPress += OnCancel;
 			var cancellationToken = _cancellationTokenSource.Token;
 
+			Console.WriteLine("Bootstrapping service provider");
+			var serviceProvider = Bootstrap();
+			var monitor = serviceProvider.GetRequiredService<IAudienceStateMonitor>();
+
 			Console.WriteLine("Start monitoring");
-			MonitorSituation(cancellationToken);
+			await monitor.Run(cancellationToken);
 
 			Console.WriteLine("Finished");
 		}
 
-		private static void MonitorSituation(CancellationToken cancellationToken)
+		private static IServiceProvider Bootstrap()
 		{
-			Console.WriteLine("Creating controllers and services");
-			using var controller = new GpioController(PinNumberingScheme.Board);
-			using var situationProvider = new SituationProvider(controller);
-			using var feedbackService = new FeedbackService(controller);
-			using var lcdFeedbackService = new LcdFeedbackService();
+			var serviceCollection = new ServiceCollection();
 
+			StubServicesModule.RegisterServices(serviceCollection);
+			DeviceServicesModule.RegisterServices(serviceCollection);
+			PrimaNovaServicesModule.RegisterServices(serviceCollection);
 
-			var lastState = AudienceState.Unknown;
-			while (!cancellationToken.IsCancellationRequested)
-			{
-				var state = situationProvider.GetSituation();
-				if (state != lastState)
-				{
-					Console.WriteLine($"State change: {state}");
-					lcdFeedbackService.VisualizeAudienceState(state);
-				}
-
-				feedbackService.VisualizeAudienceState(state);
-
-				lastState = state;
-				Thread.Sleep(1000);
-			}
+			MediatRModule.RegisterServices(serviceCollection);
+			
+			return serviceCollection.BuildServiceProvider();
 		}
 
 		private static void OnCancel(object sender, ConsoleCancelEventArgs e)
